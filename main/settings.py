@@ -120,7 +120,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-ALLOWED_HOSTS = ['1.245.119.116']
+# ALLOWED_HOSTS = ['1.245.119.116']
 
 
 # Static files (CSS, JavaScript, Images)
