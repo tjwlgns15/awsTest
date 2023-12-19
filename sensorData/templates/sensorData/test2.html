@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <style>
+          *{
+              margin:0 ;
+              padding: 0;
+          
+          }
+          .wrap{
+              width: 400px;
+              height: 600px;
+              margin: auto;
+          }
+          
+          .header{
+              width:320px;
+              font-size: 40px;
+              font-weight: 800;
+              margin: 20px auto 0 auto;
+          }
+          
+          .line01{
+              width:250px;
+              text-align: center;
+              box-shadow: 0 5px 0px rgba(0,0,0,0.3);
+              padding-bottom: 5px;
+              margin: auto;
+          }
+          .line02{
+              width:250px;
+              text-align: center;
+              font-size: 30px;
+              margin: 20px auto 0 auto;
+          }
+          .line03{
+              width:250px;
+              text-align: center;
+              font-size: 30px;
+              padding-bottom: 10px;
+              box-shadow: 0 5px 0px rgba(0,0,0,0.3);
+              margin: auto;
+          }
+          .contents{
+              width:400px;
+              margin: 20px auto 0 auto;
+          }
+          .tempe{
+              display: flex;
+              width:250px;
+              height: 70px;
+              line-height: 70px;
+              font-size: 25px;
+              margin: 75px auto 0px auto;
+          }
+          .photo{
+              display: flex;
+              width:250px;
+              height: 70px;
+              line-height: 70px;
+              font-size: 25px;
+              margin: 10px auto 40px auto;
+          }
+
+          html {font-family: Arial; display: inline-block; text-align: center;}
+          h2 {font-size: 3.0rem;}
+          p {font-size: 3.0rem;}
+          body {max-width: 600px; margin:0px auto; padding-bottom: 25px;}
+          .switch {position: relative; display: inline-block; width: 60px; height: 34px}
+          .switch input {display: none}
+          .slider {position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #F63E36; border-radius: 34px}
+          .slider:before {position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: #fff; -webkit-transition: .4s; transition: .4s; border-radius: 34px}
+          input:checked+.slider {background-color: #3CC33C}
+          input:checked+.slider:before {-webkit-transform: translateX(26px); -ms-transform: translateX(26px); transform: translateX(26px)}
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <div class="header">
+                <div class="line01">ESP32-Test</div>                
+                <div class="line03">Sensor Control</div>
+            </div>
+            <br><br>
+            
+            <label class="switch">
+                <input type="checkbox" onchange="toggleCheckbox(this)" id="output" >
+                <span class="slider"></span>
+            </label>
+            <div class="contents">
+                <div class="tempe" id="ct">
+                    <div id="ct_line01" style="width: 150px;">Temperature</div>
+                    <div id="ct_line02" style="width: 70px; color:red;">27.30</div>
+                    <div id="ct_line03" style="width: 30px;">℃</div>
+                </div>    
+                <div class="photo" id="ch">
+                    <div id="ch_line01" style="width: 150px;">Photo</div>
+                    <div id="ch_line02" style="width: 70px; color:red;">78.2</div>
+                    <div id="ch_line03" style="width: 30px;">lux</div>                    
+                </div>    
+            </div>    
+        </div>      
+        <script>
+          // webSocketTemPhoUrl : 웹 소켓의 주소를 정의하는 변수
+          // window.location.hostname : 현재 열린 웹 페이지의 호스트(도메인) 이름
+          // "TemPho" : 웹 소켓의 엔드포인트(경로)
+          var webSocketTemPhoUrl = "ws:\/\/" + window.location.hostname + "/TemPho"; 
+          var websocketTemPho;
+          var str = "tem";
+               
+          function initTemPhoWebSocket(){
+            websocketTemPho = new WebSocket(webSocketTemPhoUrl);  // 웹 소켓 연결을 초기화
+            websocketTemPho.onopen    = function(event){};  // 소켓이 열렸을 때
+            websocketTemPho.onclose   = function(event){setTimeout(initTemPhoWebSocket, 2000);};  // 소켓이 닫혔을 때
+            websocketTemPho.onmessage = function(event){  // 소켓으로 메세지가 도착했을 때
+                 if ( str == "tem" ){
+                    document.getElementById('ct_line02').innerHTML = event.data;  // ct_line02의 내용을 들어온 메세지(event.data)로 교체
+                    document.getElementById('ct').style.backgroundColor = "skyblue";
+                    document.getElementById('ch').style.backgroundColor = "white";        
+                    str = "pho";          
+                 } else{
+                    document.getElementById('ch_line02').innerHTML = event.data;
+                    document.getElementById('ch').style.backgroundColor= "yellow";
+                    document.getElementById('ct').style.backgroundColor= "white";
+                    str = "tem";  
+                 }
+            };
+          }
+
+          function toggleCheckbox(element) {
+            var xhr = new XMLHttpRequest();
+            // 첫 번째 매개변수: HTTP 메서드, 여기서는 GET입니다.
+            // 두 번째 매개변수: 요청할 URL, 여기서는 "/update" 경로로 요청을 보냅니다.
+               // element.checked의 체크 여부에따라 쿼리문을 전송.   ex) "/update?state=1"
+            // 세 번째 매개변수: 요청을 비동기적으로 처리할지 여부, 여기서는 true로 설정되어 비동기적으로 처리됩니다.            
+            xhr.open("GET", "/update?state=" + (element.checked ? "1" : "0"), true);
+            xhr.send();
+          }
+  
+          setInterval(function(){
+              websocketTemPho.send(str);  // 소켓에 str을 주기적으로 전송
+          },2000);
+   
+          window.onload = initTemPhoWebSocket;  // 웹 페이지가 로드되었을 때 initTemPhoWebSocket 호출          
+        </script>      
+    </body>
+</html>

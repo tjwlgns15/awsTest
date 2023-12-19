@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_contents %}
+<meta charset="utf-8">
+<title>Stacked Line Chart</title>
+<style>
+.toggleSwitch {
+  width: 100px;
+  height: 50px;
+  display: block;
+  position: relative;
+  border-radius: 30px;
+  background-color: #fff;
+  box-shadow: 0 0 16px 3px rgba(0 150 0 / 30%);
+  cursor: pointer;
+  margin: 30px;
+}
+
+.toggleSwitch .toggleButton {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: #f03d3d;
+  display: flex;
+  align-items: center; /* 텍스트 수직 가운데 정렬. */
+  justify-content: center; /* 수평 가운데 정렬. */
+}
+
+#toggle:checked ~ .toggleSwitch {
+  background: #29f033;  /* 체크 되었을 때의 버튼 색 */
+}
+
+#toggle:checked ~ .toggleSwitch .toggleButton {
+  left: calc(100% - 44px);  /* 버튼이 이동했을 때의 위치 */
+  background: #fff;
+}
+
+.toggleSwitch, .toggleButton {
+  transition: all 0.5s ease-in;    /* 버튼 이동 속도*/
+}
+
+</style>
+{% endblock head_contents %}
+
+{% block explain_contents %}
+<input type="checkbox" id="toggle" hidden>
+
+<label for="toggle" class="toggleSwitch">
+  <span class="toggleButton">OFF</span> <!-- 클릭 전에는 "OFF" -->
+
+</label>
+
+<script>
+  document.getElementById('toggle').addEventListener('change', function() {
+    const button = document.querySelector('.toggleButton');
+
+    if (this.checked) {
+      button.textContent = 'ON';
+    } else {
+      button.textContent = 'OFF';
+    }
+  });
+
+    function toggleCheckbox(element) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "/update?state=" + (element.checked ? "1" : "0"), true);
+      xhr.send();
+    }
+</script>
+{% endblock explain_contents %}

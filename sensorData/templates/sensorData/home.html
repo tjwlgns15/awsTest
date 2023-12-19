@@ -1,0 +1,513 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_contents %}
+<title>Sensor Data Home</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 차트 -->
+
+<style>
+    .left {
+      flex: 1; /* 좌측 공간을 50%로 설정 */
+      padding: 20px;
+      display: flex;
+      justify-content: center; /* 가로 중앙 정렬 */
+      align-items: center; /* 세로 중앙 정렬 */
+    }
+
+    .right {
+      flex: 1; /* 우측 공간을 50%로 설정 */
+      background-color: #f0f0f0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top {
+      flex: 0 0 auto;
+      padding: 10px;
+    }
+
+    .bottom {
+      flex: 0 0 auto;
+      padding: 10px;
+    }
+
+    .sensor-image-container {
+        position: relative;
+        width: 650px;
+        height: 650px;
+    }
+
+    .sensor-image {
+        width: 650px;
+        height: 650px;
+    }
+
+    .image-text {
+        position: absolute;
+        font-size: 16px;
+        color: black;
+        background-color: rgba(190, 189, 243, 0.3);
+        padding: 5px 10px;
+    }
+
+    .text1 {
+        top: 0px;
+        left: 300px;
+    }
+    .text2 {
+        top: 90px;
+        left: 270px;
+    }
+    .text3 {
+        bottom: 230px;
+        left: 90px;
+    }
+    .text4 {
+        bottom: 280px;
+        left: 90px;
+    }
+    .text5 {
+        bottom: 100px;
+        left: 50px;
+    }
+    .text6 {
+        bottom: 100px;
+        right: 50px;
+    }
+    .text7 {
+        top: 30px;
+        left: 30px;
+    }
+
+    table {
+        width: 855px;
+        height: 220px;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 5px;
+        text-align: center;
+    }
+
+    .image-text2 {
+        position: absolute;
+        font-size: 16px;
+        color: black;
+        background-color: rgba(190, 189, 243, 0.6);
+        padding: 5px 5px;
+    }
+
+    .text1_1 {
+        top: 55px;
+        right: 5px;
+    }
+    .text1_2 {
+        top: 90px;
+        right: 0px;
+    }
+    .text1_3 {
+        top: 140px;
+        right: 0px;
+    }
+    .text1_4 {
+        bottom: 0px;
+        right: 130px;
+    }
+    .text1_5 {
+        bottom: 140px;
+        left: 30px;
+    }
+    .text1_6 {
+        bottom: 0px;
+        left: 270px;
+    }
+    .text1_7 {
+        bottom: 180px;
+        left: 70px;
+    }
+</style>
+{% endblock head_contents %}
+
+{% block explain_contents %}
+<div class="container" style="margin: 0 20px">
+    <div class="left">
+        <div class="sensor-image-container">
+            <img class="sensor-image" src="/static/images/fishbowl-2.gif" alt="어항">
+<!--            <img id="sensor-image" src="" width="640" height="480" alt="카메라 스트리밍">-->
+            <div class="image-text text1">Temp : <span id="temp_value">Placeholder</span></div>
+            <div class="image-text text2">O2 : <span id="o2_value">Placeholder</span></div>
+            <div class="image-text text7">Light : <span id="light_value">Placeholder</span></div>
+
+<!--            <div class="image-text text3">용존산소 : <span id="do_value">Placeholder</span></div>-->
+<!--            <div class="image-text text4">수온 : <span id="temp_value">Placeholder</span></div>-->
+<!--            <div class="image-text text5">유량 : <span id="flow_value">Placeholder</span></div>-->
+<!--            <div class="image-text text6">pH : <span id="ph_value">Placeholder</span></div>-->
+
+        </div>
+    </div>
+
+    <div class="right">
+        <!-- 우측 내용 -->
+        <div class="top">
+            <h3 style="text-align: center;">실시간 테이블</h3>
+            <table id="myTable">
+                <thead>
+                <tr style="background-color: #444; color: white;">
+                    <th>Time</th>
+                    <th>Temp (°C)</th>
+                    <th>O2 (ppm)</th>
+                    <th>Light (Lux)</th>
+<!--                    <th>DO (ml/L)</th>-->
+<!--                    <th>Temper (°C)</th>-->
+<!--                    <th>Flow (L/min)</th>-->
+<!--                    <th>pH</th>-->
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <br>
+        </div>
+        <div class="bottom">
+            <h3 style="text-align: center;">실시간 차트</h3>
+            <div id="chart01" style="width: 875px; height: 435px;"></div>
+            <div id="chart02" style="width: 875px; height: 435px;"></div>
+        </div>
+    </div>
+</div><br><br><br><br>
+<div class="sensor-image-container">
+    <img class="sensor-image" src="/static/images/예상도1.jpg" alt="어항">
+    <div class="image-text2 text1_1">온도 : <span id="temp_value1">Placeholder</span></div>
+    <div class="image-text2 text1_2">산소 : <span id="o2_value1">Placeholder</span></div>
+    <div class="image-text2 text1_7">광량 : <span id="light_value1">Placeholder</span></div>
+<!--    <div class="image-text2 text1_3">용존산소 : <span id="do_value1">Placeholder</span></div>-->
+<!--    <div class="image-text2 text1_4">수온 : <span id="temp_value1">Placeholder</span></div>-->
+<!--    <div class="image-text2 text1_5">유량 : <span id="flow_value1">Placeholder</span></div>-->
+<!--    <div class="image-text2 text1_6">pH : <span id="ph_value1">Placeholder</span></div>-->
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.0/echarts.min.js"></script>
+<script>
+
+    //----------------------------------------차트1----------------------------------------
+    var myChart = echarts.init(document.getElementById('chart01'));
+    var option = {
+        title: {
+            text: '실시간 센서',
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#283b56'
+                }
+            }
+        },
+        legend: {
+            data: ['Temp', 'O2', 'Light'],  // 범례
+        },
+        dataZoom: {  // 확대, 축소
+            show: true,
+            start: 0,
+            end: 100,
+        },
+        xAxis: [
+            {
+                type: 'category',
+                boundaryGap: true,
+                data: [],
+            },
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                scale: true,
+                name: 'sensor',
+                max: 120,
+                min: -10,
+                boundaryGap: [0.2, 0.2],
+                axisLabel: {
+                    formatter: '{value} '
+                },
+            },
+        ],
+        // 데이터
+        series: [
+            {
+                name: 'Temp',
+                type: 'line',
+<!--                stack: 'Total',-->
+<!--                areaStyle: {}, // 면 채우기-->
+                lineStyle: {
+                    color: '#2A265C',
+                },
+                smooth: true,  // 곡선
+                yAxisIndex: 0,
+                data: [],
+                animationEasingUpdate: 'linear', // 부드럽게 이동
+            },
+            {
+                name: 'O2',
+                type: 'line',
+                yAxisIndex: 0,
+                itemStyle: {
+                    color: '#EEAD00',
+                },
+                smooth: true,
+                data: [],
+                animationEasingUpdate: 'linear',
+            },
+            {
+                name: 'Light',
+                type: 'line',
+<!--                stack: 'Total',-->
+<!--                    areaStyle: {}, // 면 채우기-->
+                lineStyle: {
+                    color: '#18B013',
+                },
+                smooth: true,  // 곡선
+                yAxisIndex: 0,
+                data: [],
+                animationEasingUpdate: 'linear', // 부드럽게 이동
+            },
+        ],
+    };
+
+
+
+    function newUpdateChart(data_dict) {
+<!--            console.log(data_dict);-->
+        var data_list = data_dict.data_list;
+        var recent_data = data_dict.recent_data;
+
+        var time_list = data_list.time_list.reverse();
+        var temp_list = data_list.temp_list.reverse();
+        var sound_list = data_list.sound_list.reverse();
+        var light_list = data_list.light_list.reverse();
+        console.log(light_list);
+<!--        console.log(sound_list);-->
+
+        // Update the x-axis and data series
+        option.xAxis[0].data = time_list;
+        option.series[0].data = temp_list;
+        option.series[1].data = sound_list;
+        option.series[2].data = light_list;
+        console.log(light_list);
+
+        myChart.setOption(option);
+    }
+//----------------------------------------차트2----------------------------------------
+    var myChart2 = echarts.init(document.getElementById('chart02'));
+    var option2 = {
+        title: {
+            text: '실시간 센서',
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#283b56'
+                }
+            }
+        },
+        legend: {
+            data: ['Temp', 'O2', 'Light'],  // 범례
+        },
+        dataZoom: {  // 확대, 축소
+            show: true,
+            start: 0,
+            end: 100,
+        },
+        xAxis: [
+            {
+                type: 'category',
+                boundaryGap: true,
+                data: [],
+            },
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                scale: true,
+                name: 'sensor',
+                max: 100,
+                min: 0,
+                boundaryGap: [0.2, 0.2],
+                axisLabel: {
+                    formatter: '{value} '
+                },
+            },
+        ],
+        // 데이터
+        series: [
+            {
+                name: 'Temp',
+                type: 'line',
+<!--                stack: 'Total',-->
+<!--                areaStyle: {}, // 면 채우기-->
+                lineStyle: {
+                    color: '#2A265C',
+                },
+                smooth: true,  // 곡선
+                yAxisIndex: 0,
+                data: [],
+                animation: false,
+<!--                animationEasingUpdate: 'elasticOut',-->
+            },
+            {
+                name: 'O2',
+                type: 'line',
+                yAxisIndex: 0,
+                itemStyle: {
+                    color: '#EEAD00',
+                },
+                smooth: true,
+                data: [],
+                animation: false,
+<!--                animationEasingUpdate: 'elasticOut',-->
+
+            },
+            {
+                name: 'Light',
+                type: 'line',
+<!--                stack: 'Total',-->
+<!--                    areaStyle: {}, // 면 채우기-->
+                lineStyle: {
+                    color: '#18B013',
+                },
+                smooth: true,  // 곡선
+                yAxisIndex: 0,
+                data: [],
+                animation: false,
+<!--                animationEasingUpdate: 'elasticOut',-->
+            },
+        ],
+    };
+
+
+
+    function newUpdateChart2(data_dict) {
+<!--            console.log(data_dict);-->
+        var data_list = data_dict.data_list;
+        var recent_data = data_dict.recent_data;
+
+        var time_list = data_list.time_list;
+        var temp_list = data_list.temp_list;
+        var sound_list = data_list.sound_list;
+        var light_list = data_list.light_list;
+        console.log(data_list);
+<!--        console.log(sound_list);-->
+
+        // Update the x-axis and data series
+        option2.xAxis[0].data = time_list;
+        option2.series[0].data = temp_list;
+        option2.series[1].data = sound_list;
+        option2.series[2].data = light_list;
+        console.log(light_list);
+
+        myChart2.setOption(option2);
+    }
+
+//----------------------------------------테이블 업데이트----------------------------------------
+
+    function updateTable(data_dict) {
+        var data_list = data_dict['data_list'];
+<!--        console.log('data_list');-->
+<!--        console.log(data_list);-->
+        var time_list = data_list.time_list.reverse();
+        var temp_list = data_list.temp_list.reverse();
+        var sound_list = data_list.sound_list.reverse();
+        var light_list = data_list.light_list.reverse();
+
+<!--        console.log(time_list);-->
+
+        const table = document.getElementById("myTable");
+        const tbody = table.querySelector("tbody");
+
+        // 기존 테이블 내용을 지웁니다.
+        tbody.innerHTML = "";
+
+        // JSON 데이터의 처음 5개 항목만 사용하여 테이블 행을 생성합니다.
+        for (let i = 0; i < 5; i++) {
+            const row = document.createElement("tr");
+            const timeCell = document.createElement("td");
+            const tempCell = document.createElement("td");
+            const o2Cell = document.createElement("td");
+            const lightCell = document.createElement("td");
+
+            timeCell.textContent = time_list[i];
+            tempCell.textContent = temp_list[i];
+            o2Cell.textContent = sound_list[i];
+            lightCell.textContent = light_list[i];
+
+            row.appendChild(timeCell);
+            row.appendChild(tempCell);
+            row.appendChild(o2Cell);
+            row.appendChild(lightCell);
+
+            tbody.appendChild(row);
+        }
+    }
+
+// -------------------------------------------금붕어------------------------------------------
+    function fetchRecentDataAndUpdate(data_dict) {
+
+        var recent_list = data_dict.recent_data;
+        var recent_temp = recent_list.temp;
+        var recent_sound = recent_list.sound;
+        var recent_light = recent_list.light;
+<!--                console.log(recent_sound);-->
+        // 위
+        document.getElementById("temp_value").textContent = recent_temp + " °C";
+        document.getElementById("o2_value").textContent = recent_sound + " ppm";
+        document.getElementById("light_value").textContent = recent_light + " lux";
+
+        //아래
+        document.getElementById("temp_value1").textContent = recent_temp + " °C";
+        document.getElementById("o2_value1").textContent = recent_sound + " ppm";
+        document.getElementById("light_value1").textContent = recent_light + " lux";
+
+    }
+
+
+    function newFetchDataAndUpdateChart() {
+        fetch("/update/")
+            .then((response) => response.json())
+            .then((data_dict) => {
+<!--                console.log(data_dict);-->
+                newUpdateChart(data_dict);  // 차트 데이터 업데이트
+                newUpdateChart2(data_dict);
+                updateTable(data_dict);  // 테이블 업데이트
+                fetchRecentDataAndUpdate(data_dict);  // 금붕어 업데이트
+
+            });
+    }
+
+    newFetchDataAndUpdateChart(); // 초기 호출
+
+
+    setInterval(newFetchDataAndUpdateChart, 10000); // 간격두고 호출
+
+    //------------------------------------------아두이노------------------------------------------
+    function toggleLED(command) {
+        // 클릭한 버튼에 따라 명령 전달
+        fetch(`/toggle_light/${command}/`)
+            .then(response => {
+                if (response.ok) {
+                    console.log(`LED ${command === 'H' ? 'On' : 'Off'}`);
+                } else {
+                    console.error('Failed to toggle LED');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+</script>
+{% endblock explain_contents %}

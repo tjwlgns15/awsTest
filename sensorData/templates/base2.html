@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="kor">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/b17d4fa9e7.js" crossorigin="anonymous"></script>
+
+
+    <style>
+        .wrap {
+            position: relative;
+            min-height: 100%;
+            padding-bottom: 114px;
+            font-family: 'NanumSquareNeo-Variable', Arial, sans-serif;
+        }
+        .container {
+          display: flex;
+          width: 100%;
+          min-width: 1900px;
+        }
+
+        import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+        :root{
+            --text-color: #f0f4f5;
+            --background-color: #263343;
+            --accent-color:#d49466;
+        }
+
+        body {
+            margin: 0px;
+            font-family: 'Open sans';
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .navbar {
+            display: flex;
+
+            align-items: center;
+            background:#263343;
+            padding: 8px 12px;
+        }
+
+        .navbar__logo {
+            font-size: 24px;
+            color: white;
+        }
+
+        .navbar__logo i {
+            color: #d49466;
+        }
+
+        .navbar__menu {
+            display: flex;
+            list-style: none;
+            padding-left: 0px;
+        }
+
+        .navbar__menu li {
+            padding: 8px 12px;
+            margin: 0 5px;
+        }
+
+        .navbar__menu li:nth-child(2) {
+            background-color: #59D7F7; /* Home 링크 배경색 변경 */
+            border-radius: 4px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 8px 24px;
+            }
+
+            .navbar__menu {
+                display: none;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+
+            .navbar__menu li {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+
+    {% block head_contents %}
+    {% endblock head_contents %}
+</head>
+
+<body>
+
+<div class="wrap">
+    <nav class="navbar">
+
+        <div class="navbar__logo">
+<!--            <i class="fab fa-accusoft"></i>-->
+            <a href="/">solmitech</a>
+        </div>
+
+        <ul class="navbar__menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/list1">List</a></li>
+<!--            <li><a href="/test">Test</a></li>-->
+<!--            <li><a href="/test2">Test2</a></li>-->
+        </ul>
+    </nav>
+    {% block explain_contents %}
+    {% endblock explain_contents %}
+</div>
+<script>
+
+</script>
+</body>
+</html>
