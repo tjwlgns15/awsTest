@@ -122,6 +122,8 @@ USE_TZ = True
 
 # ALLOWED_HOSTS = ['1.245.119.116']
 
+# asw 변경
+ALLOWED_HOSTS = [".ap-northeast-2.compute.amazonaws.com"]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
